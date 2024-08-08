@@ -1,57 +1,89 @@
-var builder = WebApplication.CreateBuilder();
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+using System.Configuration;
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddCors(options =>
+namespace LMSProject
 {
-    options.AddDefaultPolicy(builder =>
+    public partial class Login : Form
     {
-        builder.AllowAnyOrigin();
-        builder.AllowAnyHeader();
-        builder.AllowAnyMethod();
-    });
-});
+        public Login()
+        {
+            InitializeComponent();
+        }
 
-var app = builder.Build();
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+        }
 
-app.UseCors();
+        private void LoginBtn_Click(object sender, EventArgs e)
+        {
+            String CS = "data source=.; database = LMSDB; integrated security=SSPI";
+            using (SqlConnection con = new SqlConnection(CS))
+            {
+                SqlCommand cmd = new SqlCommand("Select *from tblLogin where UserName='" + txtusername.Text + "' and Password ='" + txtpassword.Text + "' ", con);
+                con.Open();
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                if (dt.Rows.Count != 0)
+                {
+                    Dashboard das = new Dashboard();
+                    this.Hide();
+                    das.Show();
 
-app.MapGet("/", async context =>
-{
-    await context.Response.WriteAsync("Welcome to the Azure Container App!");
-});
+                }
 
-app.MapGet("/albums", () =>
-{
-    return Album.GetAll();
-})
-.WithName("GetAlbums");
+                else
+                {
+                    MessageBox.Show("Wrong Username OR Password", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
 
-app.Run();
+        private void circularPicture1_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
 
-record Album(int Id, string Title, string Artist, double Price, string Image_url)
-{
-    public static List<Album> GetAll()
-    {
-        var albums = new List<Album>(){
-            new Album(1, "You, Me and an App Id", "Daprize", 10.99, "https://aka.ms/albums-daprlogo"),
-            new Album(2, "Seven Revision Army", "The Blue-Green Stripes", 13.99, "https://aka.ms/albums-containerappslogo"),
-            new Album(3, "Scale It Up", "KEDA Club", 13.99, "https://aka.ms/albums-kedalogo"),
-            new Album(4, "Lost in Translation", "MegaDNS", 12.99,"https://aka.ms/albums-envoylogo"),
-            new Album(5, "Lock Down Your Love", "V is for VNET", 12.99, "https://aka.ms/albums-vnetlogo"),
-            new Album(6, "Sweet Container O' Mine", "Guns N Probeses", 14.99, "https://aka.ms/albums-containerappslogo")
-         };
+        private void txtusername_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (txtusername.Text == "UserName")
+            {
+                txtusername.Clear();
+            }
+        }
 
-        return albums;
+        private void txtpassword_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (txtpassword.Text == "Password")
+            {
+                txtpassword.Clear();
+                txtpassword.PasswordChar = '*';
+            }
+        }
+
+        private void txtusername_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtpassword_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Login_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
