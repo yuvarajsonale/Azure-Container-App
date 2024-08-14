@@ -28,7 +28,7 @@ app.UseCors();
 
 app.MapGet("/", async context =>
 {
-    await context.Response.WriteAsync("Hi This is Yuvraj and I welcome you to the Azure Container App.... Thank you!");
+    await context.Response.WriteAsync("Hi This is Yuvraj and I welcome you to the Azure Container App V2.... Thank you!");
 });
 
 app.MapGet("/albums", () =>
